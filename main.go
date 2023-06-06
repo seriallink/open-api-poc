@@ -21,28 +21,24 @@ func main() {
 }
 
 func specHandler(w http.ResponseWriter, r *http.Request) {
-	if err := r.ParseForm(); err != nil {
-		fmt.Fprintf(w, "err: %v", err)
-		return
-	}
 
 	ctx := context.Background()
 	loader := &openapi3.Loader{Context: ctx, IsExternalRefsAllowed: true}
 	f, err := url.Parse(r.FormValue("uri"))
 	if err != nil {
-		fmt.Fprintf(w, "err: %v", err)
+		fmt.Fprintf(w, "error parsing form: %v", err)
 		return
 	}
 	doc, err := loader.LoadFromURI(f)
 	if err != nil {
-		fmt.Fprintf(w, "err: %v", err)
+		fmt.Fprintf(w, "error loading file: %v", err)
 		return
 	}
 
 	// Validate document
 	err = doc.Validate(ctx)
 	if err != nil {
-		fmt.Fprintf(w, "err: %v", err)
+		fmt.Fprintf(w, "error validating specs: %v", err)
 		return
 	}
 
